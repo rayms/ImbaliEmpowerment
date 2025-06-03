@@ -1,0 +1,624 @@
+﻿@model List<Imbali.Models.InfoBox>
+@{
+    ViewData["Title"] = "Edit Info Boxes";
+    var infoBoxes = Model;
+}
+
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@600;700&display=swap" rel="stylesheet">
+
+
+<hr />
+<h3 style="margin-top:2rem;">FlipBox Manager (Homepage Style Preview)</h3>
+
+<div class="flipbox-admin-wrapper">
+    @for (int i = 1; i <= 3; i++)
+    {
+        var boxName = $"FlipBox{i}";
+        <div class="flipbox-panel" data-folder="@boxName">
+            <h4>@boxName</h4>
+
+            <div class="image-preview-container dropzone"
+                 id="preview-@boxName"
+                 ondragover="event.preventDefault();"
+                 ondrop="handleDrop(event, '@boxName')">
+                <p class="loading-msg">Loading images...</p>
+            </div>
+
+            <input type="file" onchange="uploadFlipboxImage(this, '@boxName')" />
+            <button onclick="clearFlipboxFolder('@boxName')">🧹 Clear All</button>
+        </div>
+    }
+</div>
+
+
+
+
+<h2>Edit Info Boxes</h2>
+<form id="infoBoxForm">
+    <div id="editBoxContainer">
+        @if (infoBoxes != null)
+        {
+            for (int i = 0; i < infoBoxes.Count; i++)
+            {
+                <div class="edit-box" data-index="@i">
+                    <h4>Box @(i + 1)</h4>
+
+                    <!-- Title Input -->
+                    <label>Title:</label>
+                    <input type="text" class="title-input" value="@infoBoxes[i].Title" /><br />
+
+                    <!-- Cover Image Upload -->
+                    <label>Upload Cover Image:</label>
+                    <input type="file" class="upload-img" onchange="handleUpload(this)" /><br />
+                    <img src="@infoBoxes[i].Image" class="preview-img" />
+                    <input type="hidden" name="image" value="@infoBoxes[i].Image" class="image-input" />
+
+                    <!-- Inline Image Upload -->
+                    <label>Upload Inline Image:</label>
+                    <input type="file" class="upload-inline-img" onchange="handleInlineUpload(this)" /><br />
+                    <img src="@infoBoxes[i].InlineImage" class="inline-img-fixed" />
+                    <input type="hidden" name="inlineImage" value="@infoBoxes[i].InlineImage" class="inline-image-input" />
+
+                    <!-- Content Editor -->
+                    <label>Content:</label>
+                    <div class="toolbar">
+                        <select class="fontSelector" onchange="applyFont(this)">
+                            <option value="Mulish">Mulish</option>
+                            <option value="Arial">Arial</option>
+                            <option value="Georgia">Georgia</option>
+                            <option value="Times New Roman">Times New Roman</option>
+                            <option value="Fredoka">Fredoka</option>
+                            <option value="Baloo 2">Baloo 2</option>
+                            <option value="Lora">Lora</option>
+                        </select>
+                        <button type="button" onclick="execCmd('bold')"><b>B</b></button>
+                        <button type="button" onclick="execCmd('underline')"><u>U</u></button>
+                    </div>
+                    <div contenteditable="true" class="content-editor" oninput="updateHidden(this)">
+                        @Html.Raw(infoBoxes[i].Content)
+                    </div>
+                    <textarea name="content" style="display:none;">@infoBoxes[i].Content</textarea><br />
+
+                    <!-- Box Controls -->
+                    <button type="button" class="clear-btn" onclick="clearBox(this)">Clear Box</button>
+                    <button type="button" class="remove-btn" onclick="removeBox(this)">Remove Box</button>
+
+                    <!-- Preview Section -->
+                    <div class="preview">
+                        <h5>Live Preview</h5>
+                        @if (!string.IsNullOrWhiteSpace(infoBoxes[i].Title))
+                        {
+                            <h2 class="auto-title">@infoBoxes[i].Title</h2>
+                        }
+                        <img src="@infoBoxes[i].Image" class="preview-img" />
+                        @if (!string.IsNullOrEmpty(infoBoxes[i].InlineImage))
+                        {
+                            <img src="@infoBoxes[i].InlineImage" class="inline-img-fixed" />
+                        }
+                        <div class="preview-content truncated">
+                            @Html.Raw(infoBoxes[i].Content)
+                        </div>
+                    </div>
+
+                    <hr />
+                </div>
+            }
+        }
+    </div>
+    <button type="button" onclick="addBox()">Add New Box</button>
+    <button type="button" onclick="saveChanges()" class="save-btn">Save All Changes</button>
+</form>
+
+
+
+<style>
+    body {
+        background: linear-gradient(135deg, #f7edf9, #fdf6f9);
+        font-family: 'Mulish', sans-serif;
+        color: #5C5470;
+    }
+
+    .edit-box {
+        margin: 2rem auto;
+        padding: 1.5rem;
+        border: 1px solid #E4BBE8;
+        border-radius: 12px;
+        background-color: #ffffff;
+        box-shadow: 0 4px 8px rgba(228, 187, 232, 0.2);
+        max-width: 700px;
+    }
+
+        .edit-box label {
+            font-weight: bold;
+            display: block;
+            margin-top: 1rem;
+            margin-bottom: 0.3rem;
+        }
+
+    textarea, input[type="text"] {
+        width: 100%;
+        padding: 0.6rem;
+        margin-bottom: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-family: 'Mulish', sans-serif;
+    }
+
+    .upload-img {
+        margin-bottom: 1rem;
+    }
+
+    .content-editor {
+        width: 100%;
+        min-height: 120px;
+        padding: 0.6rem;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        background: #fff;
+        font-family: 'Mulish', sans-serif;
+        margin-bottom: 1rem;
+        outline: none;
+    }
+
+    .toolbar {
+        margin-bottom: 0.5rem;
+    }
+
+        .toolbar select, .toolbar button {
+            margin-right: 0.5rem;
+            padding: 0.3rem 0.6rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+    .clear-btn, .remove-btn, .save-btn, button[type="button"] {
+        padding: 0.5rem 1.2rem;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 0.95rem;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .clear-btn, .remove-btn {
+        background-color: #DC4C65;
+        color: white;
+        margin-right: 0.5rem;
+    }
+
+        .clear-btn:hover, .remove-btn:hover {
+            background-color: #B6374D;
+            transform: scale(1.05);
+        }
+
+    .save-btn {
+        background-color: #7A4E7A;
+        color: white;
+        display: block;
+        margin: 2rem auto;
+    }
+
+        .save-btn:hover {
+            background-color: #5E3B5E;
+            transform: scale(1.05);
+        }
+
+    .preview {
+        margin-top: 1.5rem;
+        padding: 1rem;
+        background-color: #FAF4FB;
+        border: 1px dashed #E4BBE8;
+        border-radius: 10px;
+    }
+
+    .preview-img {
+        max-width: 100%;
+        max-height: 200px;
+        margin-bottom: 1rem;
+        border-radius: 6px;
+    }
+
+    .preview-content {
+        font-size: 0.95rem;
+        color: #5C5470;
+        line-height: 1.5;
+        word-break: break-word; /* 🔑 This is the key fix */
+        overflow-wrap: break-word; /* Optional fallback */
+    }
+
+
+    .info-boxes-preview {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        justify-content: center;
+        margin-bottom: 2rem;
+    }
+
+    .info-box-preview {
+        width: 300px;
+        border: 1px solid #E4BBE8;
+        border-radius: 10px;
+        background-color: #fff;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+
+        .info-box-preview .info-banner img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+
+        .info-box-preview .info-content {
+            padding: 1rem;
+            font-size: 0.95rem;
+            color: #5C5470;
+            line-height: 1.4;
+        }
+
+    .inline-img-fixed {
+        width: 300px; /* Force width */
+        height: auto; /* Maintain aspect ratio */
+        max-width: 100%; /* Responsive fallback */
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        object-fit: contain; /* Ensures the whole image is visible */
+        display: block;
+    }
+
+    .flipbox-admin-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2rem;
+        justify-content: center;
+        margin-top: 1.5rem;
+    }
+
+    .flipbox-panel {
+        width: 300px;
+        background: #fffdf9;
+        border: 2px solid #dab6e1;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        padding: 1rem;
+        font-family: 'Mulish', sans-serif;
+        text-align: center;
+    }
+
+        .flipbox-panel h4 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: #7a4e7a;
+        }
+
+    .image-preview-container {
+        min-height: 150px;
+        margin-bottom: 1rem;
+        background: #f9f3fa;
+        border: 1px dashed #d4b4dc;
+        border-radius: 6px;
+        padding: 0.5rem;
+        overflow-y: auto;
+        max-height: 250px;
+    }
+
+        .image-preview-container img {
+            max-width: 100%;
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+    .flipbox-panel button {
+        margin-top: 0.5rem;
+        padding: 6px 12px;
+        border: none;
+        background-color: #c0392b;
+        color: white;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .dropzone {
+        border: 2px dashed #cfa4e1;
+        transition: background-color 0.3s ease;
+    }
+
+        .dropzone.dragover {
+            background-color: #f0e6f8;
+        }
+
+    .image-preview-container img:hover {
+        transform: scale(1.5);
+        transition: transform 0.2s ease;
+        z-index: 10;
+        box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+
+</style>
+
+@section Scripts {
+    <script>
+        function execCmd(command) {
+            document.execCommand(command, false, null);
+        }
+
+        function applyFont(select) {
+            document.execCommand("fontName", false, select.value);
+        }
+
+        function handleUpload(input) {
+            const box = input.closest('.edit-box');
+            const file = input.files[0];
+
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append("imageFile", file);
+
+            fetch('/Admin/UploadImage', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.imagePath) {
+                    box.querySelector('input[name="image"]').value = data.imagePath;
+                    box.querySelector('.preview-img').src = data.imagePath;
+                } else {
+                    alert("Image upload failed.");
+                }
+            });
+        }
+
+        function handleInlineUpload(input) {
+            const box = input.closest('.edit-box');
+            const file = input.files[0];
+
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append("imageFile", file);
+
+            fetch('/Admin/UploadImage', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.imagePath) {
+                    box.querySelector('input[name="inlineImage"]').value = data.imagePath;
+                    box.querySelector('.inline-img-fixed').src = data.imagePath;
+                } else {
+                    alert("Inline image upload failed.");
+                }
+            });
+        }
+
+        function updateHidden(contentDiv) {
+            const box = contentDiv.closest('.edit-box');
+            const htmlContent = contentDiv.innerHTML;
+            box.querySelector('textarea[name="content"]').value = htmlContent;
+            box.querySelector('.preview-content').innerHTML = htmlContent;
+        }
+
+        function clearBox(button) {
+            var box = button.closest('.edit-box');
+            box.querySelector('.title-input').value = '';
+            box.querySelector('input[name="image"]').value = '';
+            box.querySelector('input[name="inlineImage"]').value = '';
+            box.querySelector('.content-editor').innerHTML = '';
+            box.querySelector('textarea[name="content"]').value = '';
+            box.querySelector('.preview-img').src = '';
+            box.querySelector('.inline-img-fixed').src = '';
+            box.querySelector('.preview-content').innerHTML = '';
+        }
+
+        function removeBox(button) {
+            button.closest('.edit-box').remove();
+            refreshPreviews();
+        }
+
+        function addBox() {
+            const newBoxHtml = `
+            <div class="edit-box">
+                <h4>New Box</h4>
+                <label>Title:</label>
+                <input type="text" class="title-input" /><br />
+
+                <label>Upload Cover Image:</label>
+                <input type="file" class="upload-img" onchange="handleUpload(this)" /><br />
+                <img src="/images/placeholder.png" class="preview-img" />
+                <input type="hidden" name="image" value="/images/placeholder.png" class="image-input" />
+
+                <label>Upload Inline Image:</label>
+                <input type="file" class="upload-inline-img" onchange="handleInlineUpload(this)" /><br />
+                <img src="/images/placeholder.png" class="inline-img-fixed" />
+                <input type="hidden" name="inlineImage" value="/images/placeholder.png" class="inline-image-input" />
+
+                <label>Content:</label>
+                <div class="toolbar">
+                    <select class="fontSelector" onchange="applyFont(this)">
+                        <option value="Mulish">Mulish</option>
+                        <option value="Arial">Arial</option>
+                        <option value="Georgia">Georgia</option>
+                        <option value="Times New Roman">Times New Roman</option>
+                        <option value="Fredoka">Fredoka</option>
+                        <option value="Baloo 2">Baloo 2</option>
+                        <option value="Lora">Lora</option>
+                    </select>
+                    <button type="button" onclick="execCmd('bold')"><b>B</b></button>
+                    <button type="button" onclick="execCmd('underline')"><u>U</u></button>
+                </div>
+                <div contenteditable="true" class="content-editor" oninput="updateHidden(this)"></div>
+                <textarea name="content" style="display:none;"></textarea><br />
+
+                <button type="button" class="clear-btn" onclick="clearBox(this)">Clear Box</button>
+                <button type="button" class="remove-btn" onclick="removeBox(this)">Remove Box</button>
+                <hr />
+            </div>`;
+            document.getElementById('editBoxContainer').insertAdjacentHTML('beforeend', newBoxHtml);
+            refreshPreviews();
+        }
+
+        function saveChanges() {
+            var data = [];
+            document.querySelectorAll('.edit-box').forEach(box => {
+                var title = box.querySelector('.title-input').value;
+                var image = box.querySelector('input[name="image"]').value;
+                var inlineImage = box.querySelector('input[name="inlineImage"]').value;
+                var content = box.querySelector('textarea[name="content"]').value;
+                data.push({ title: title, image: image, inlineImage: inlineImage, content: content });
+            });
+
+            fetch('/Admin/SaveInfoBoxes', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            }).then(response => {
+                if (response.ok) {
+                    alert('Saved successfully!');
+                    location.reload();
+                } else {
+                    alert('Error saving data.');
+                }
+            });
+        }
+
+        function refreshPreviews() {
+            document.querySelectorAll('.edit-box').forEach((box, index) => {
+                box.setAttribute('data-index', index);
+                box.querySelector('h4').innerText = "Box " + (index + 1);
+            });
+        }
+    </script>
+
+
+    <script>
+        function uploadFlipboxImage(input, folderName) {
+            const file = input.files[0];
+            if (!file) return alert("Please select an image.");
+
+            const formData = new FormData();
+            formData.append("imageFile", file);
+            formData.append("folder", folderName);
+
+            fetch('/Admin/UploadFlipboxImage', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.ok ? res.json() : Promise.reject("Upload failed"))
+            .then(() => {
+                alert("✅ Uploaded to " + folderName);
+                loadFlipboxImages(folderName);
+            })
+            .catch(err => alert("❌ " + err));
+        }
+
+        function clearFlipboxFolder(folderName) {
+            if (!confirm("Clear all images in " + folderName + "?")) return;
+
+            fetch('/Admin/ClearFlipboxImages', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ folderName: folderName })
+            })
+            .then(res => res.ok ? res.text() : Promise.reject("Failed to clear"))
+            .then(msg => {
+                alert(msg);
+                loadFlipboxImages(folderName);
+            })
+            .catch(err => alert(" " + err));
+        }
+
+        function deleteFlipboxImage(imageUrl, folderName) {
+            if (!confirm("Delete this image?")) return;
+
+            fetch('/Admin/DeleteFlipboxImage', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ imageUrl: imageUrl })
+            })
+            .then(res => res.ok ? res.text() : Promise.reject("Failed to delete"))
+            .then(() => loadFlipboxImages(folderName))
+            .catch(err => alert("❌ " + err));
+        }
+
+        function loadFlipboxImages(folderName) {
+            const container = document.getElementById("preview-" + folderName);
+            container.innerHTML = "<p class='loading-msg'>Loading...</p>";
+
+            fetch('/Admin/ListFlipboxImages?folder=' + folderName)
+                .then(res => res.json())
+                .then(images => {
+                    container.innerHTML = '';
+                    if (images.length === 0) {
+                        container.innerHTML = "<p>No images.</p>";
+                        return;
+                    }
+
+                    images.forEach(url => {
+                        const img = document.createElement("img");
+                        img.src = url;
+
+                        const del = document.createElement("button");
+                        del.textContent = "Delete";
+                        del.style = "margin-top:5px; background:#e74c3c; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;";
+                        del.onclick = () => deleteFlipboxImage(url, folderName);
+
+                        container.appendChild(img);
+                        container.appendChild(del);
+                    });
+                });
+        }
+
+        // Load all FlipBoxes on page load
+        window.addEventListener("DOMContentLoaded", () => {
+            ["FlipBox1", "FlipBox2", "FlipBox3"].forEach(folder => loadFlipboxImages(folder));
+        });
+
+                function handleDrop(event, folderName) {
+            event.preventDefault();
+            const files = event.dataTransfer.files;
+            if (!files.length) return;
+
+            const file = files[0];
+            const formData = new FormData();
+            formData.append("imageFile", file);
+            formData.append("folder", folderName);
+
+            fetch('/Admin/UploadFlipboxImage', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.ok ? res.json() : Promise.reject("Upload failed"))
+            .then(() => {
+                alert("✅ Dropped image uploaded to " + folderName);
+                loadFlipboxImages(folderName);
+            })
+            .catch(err => alert(" " + err));
+        }
+
+        document.addEventListener("dragenter", e => {
+            if (e.target.classList.contains("dropzone")) {
+                e.target.classList.add("dragover");
+            }
+        });
+        document.addEventListener("dragleave", e => {
+            if (e.target.classList.contains("dropzone")) {
+                e.target.classList.remove("dragover");
+            }
+        });
+    </script>
+
+
+
+}
+
+

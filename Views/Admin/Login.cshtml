@@ -1,0 +1,109 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Admin Login";
+}
+
+<div class="login-wrapper">
+    <div class="login-box">
+        <img src="~/images/ImbaliLogo.JPG" alt="Site Logo" class="login-logo" />
+        <h2>Admin Login</h2>
+
+        <form method="post" asp-action="Login">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" />
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" />
+            </div>
+            @if (ViewBag.Error != null)
+            {
+                <div class="error-message">@ViewBag.Error</div>
+            }
+            <button type="submit" class="login-btn">Login</button>
+        </form>
+    </div>
+</div>
+
+<style>
+    body {
+        background: linear-gradient(135deg, #f9eafc, #fdf6f9);
+        font-family: 'Mulish', sans-serif;
+    }
+
+    .login-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 80vh;
+    }
+
+    .login-box {
+        background-color: #ffffff;
+        border: 2px solid #e4bbe8;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 4px 12px rgba(228, 187, 232, 0.3);
+        max-width: 400px;
+        width: 100%;
+        text-align: center;
+    }
+
+    .login-logo {
+        width: 100px;
+        margin-bottom: 1rem;
+        border: 2px solid #e4bbe8;
+        border-radius: 50%;
+        padding: 0.5rem;
+        background: #faf4fb;
+    }
+
+    .login-box h2 {
+        color: #5C5470;
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.2rem;
+        text-align: left;
+    }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            color: #5C5470;
+            margin-bottom: 0.3rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.6rem;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-family: 'Mulish', sans-serif;
+        }
+
+    .login-btn {
+        background-color: #7A4E7A;
+        color: white;
+        padding: 0.6rem 1.4rem;
+        border: none;
+        border-radius: 8px;
+        font-weight: bold;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+        .login-btn:hover {
+            background-color: #5E3B5E;
+            transform: scale(1.05);
+        }
+
+    .error-message {
+        color: #DC4C65;
+        margin-bottom: 1rem;
+        font-weight: bold;
+    }
+</style>

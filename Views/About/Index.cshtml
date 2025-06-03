@@ -1,0 +1,180 @@
+﻿<div class="about-full-wrapper">
+    <div class="about-container">
+        <h1 class="about-heading">About Us</h1>
+
+        <div class="quote-section">
+            <blockquote>
+                “We want to reach a point where every woman and girl speak for themselves and be heard, where they have the tools to shape their own destiny”
+                <span class="quote-author">Phumzile Mlambo-Ngcuka<br />South African politician and former director of UN Women</span>
+            </blockquote>
+        </div>
+
+        <div class="founder-section">
+            <div class="founder-img-container">
+                <img src="/images/AboutUs.jpg" alt="Founders of Imbali" class="founder-img-large" />
+            </div>
+            <div class="about-text">
+                <p>In 2024, a certified doula and aspiring lawyer and a gynaecologist/obstetrician joined forces with the vision of creating a space for women to learn about their bodies, health and sexuality. <strong>Imbali Empowerment</strong> was born. Imbali is a space that is free of judgment and full of love for the feminine.</p>
+
+                <p>The term <strong>"Imbali Empowerment"</strong> was inspired by the Zulu word <em>"imbali,"</em> meaning flower, reflecting the preciousness of womanhood. We chose this name to underscore our commitment to using our knowledge to support and uplift young girls with limited access to vital resources, emphasizing the value and beauty of their journey towards empowerment.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        background: linear-gradient(to bottom right, #DFF5E1, #C0E8D5); 
+        color: #355C4B; 
+        font-family: 'Mulish', sans-serif;
+    }
+
+    .about-container {
+        padding: 4rem 2rem;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .about-heading {
+        text-align: center;
+        font-size: 3.5rem;
+        color: #3A6655;
+        margin-bottom: 2.5rem;
+        text-shadow: 2px 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .quote-section {
+        text-align: center;
+        margin-bottom: 3rem;
+        font-style: italic;
+        font-size: 1.4rem;
+        color: #4E7C69;
+    }
+
+        .quote-section blockquote {
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.8;
+            position: relative;
+            padding: 1.5rem 2rem;
+            background: rgba(255, 255, 255, 0.4);
+            border-left: 5px solid #A3D9C5;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+    .quote-author {
+        display: block;
+        margin-top: 1rem;
+        font-size: 1rem;
+        font-weight: 600;
+        color: #3A6655;
+    }
+
+    .founder-section {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 2rem;
+        flex-wrap: wrap;
+    }
+
+    .founder-img-container {
+        flex: 1 1 45%;
+        text-align: center;
+    }
+
+    .founder-img-large {
+        width: 100%;
+        max-width: 500px;
+        height: auto;
+        border-radius: 20px;
+        border: 6px solid #E6FFF3;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s ease;
+    }
+
+        .founder-img-large:hover {
+            transform: scale(1.03);
+        }
+
+    .about-text {
+        flex: 1 1 45%;
+        font-size: 1.15rem;
+        line-height: 1.9;
+        background: rgba(255, 255, 255, 0.4);
+        padding: 2rem;
+        border-radius: 14px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        max-width: 700px;
+        color: #355C4B;
+        font-family: 'Mulish', sans-serif;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 2px dashed #A3D9C5;
+        position: relative;
+    }
+
+        .about-text:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .about-text strong {
+            color: #3A6655;
+            font-weight: 700;
+        }
+
+        .about-text em {
+            font-style: italic;
+            color: #6EB39D;
+        }
+
+        .about-text p {
+            margin-bottom: 1.5rem;
+            text-align: justify;
+        }
+
+        .about-text::before {
+            content: '❀';
+            position: absolute;
+            top: -15px;
+            left: 10px;
+            font-size: 2rem;
+            color: #6EB39D;
+        }
+
+        .about-text::after {
+            content: '❀';
+            position: absolute;
+            bottom: -15px;
+            right: 10px;
+            font-size: 2rem;
+            color: #6EB39D;
+        }
+
+    @@media (max-width: 768px) {
+        .about-heading {
+            font-size: 2.5rem;
+        }
+
+        .founder-img-large {
+            max-width: 90%;
+        }
+
+        .about-text {
+            font-size: 1rem;
+            padding: 1rem;
+        }
+
+        .quote-section blockquote {
+            font-size: 1.1rem;
+        }
+    }
+</style>
+

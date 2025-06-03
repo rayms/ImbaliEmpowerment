@@ -1,0 +1,131 @@
+﻿@{
+    ViewData["Title"] = "Thank You";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var bookChoice = ViewBag.BookChoice?.ToString();
+}
+
+<style>
+    body {
+        background: #FFF5E6;
+    }
+
+    .thank-you-container {
+        background: #ffffff; 
+        padding: 3rem;
+        border-radius: 20px;
+        text-align: center;
+        box-shadow: 0 8px 20px rgba(255, 182, 193, 0.3);
+        max-width: 800px;
+        margin: 5rem auto;
+        font-family: 'Mulish', sans-serif;
+    }
+
+    .thank-you-heading {
+        font-family: 'Lora', serif;
+        font-size: 2.5rem;
+        color: #FF69B4;
+        margin-bottom: 1rem;
+    }
+
+    .thank-you-message {
+        font-size: 1.3rem;
+        margin-bottom: 2rem;
+        color: #4A4A4A;
+    }
+
+    .book-downloads {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        flex-wrap: wrap;
+    }
+
+    .book-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        max-width: 200px;
+    }
+
+    .book-cover {
+        width: 150px;
+        height: auto;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        margin-bottom: 1rem;
+    }
+
+    .download-btn {
+        background: #FF8C42;
+        color: white;
+        padding: 0.8rem 1.6rem;
+        border: none;
+        border-radius: 50px;
+        font-size: 1.1rem;
+        font-weight: bold;
+        text-decoration: none;
+        box-shadow: 0 5px 15px rgba(255, 140, 66, 0.4);
+        transition: background 0.3s ease, transform 0.2s ease;
+        display: inline-block;
+    }
+
+        .download-btn:hover {
+            background: #FF7043;
+            transform: scale(1.05);
+        }
+
+    @@media (max-width: 768px) {
+        .book-downloads
+
+    {
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .book-card {
+        max-width: 100%;
+    }
+
+    }
+</style>
+
+<div class="thank-you-container">
+    <h1 class="thank-you-heading">Thank You for Your Kindness 🌸</h1>
+    <p class="thank-you-message">
+        Your donation is helping to change lives.<br />
+        As a token of our gratitude, please enjoy your special gift.
+    </p>
+
+    <div class="book-downloads">
+        @if (bookChoice == "1")
+        {
+            <div class="book-card">
+                <img src="/images/Becoming-You-Cover.jpg" alt="Becoming You Cover" class="book-cover" />
+                <a href="/Donation/DownloadBook1" class="download-btn">Download eBook</a>
+            </div>
+        }
+        else if (bookChoice == "2")
+        {
+            <div class="book-card">
+                <img src="/images/A-Period-Pocket-guide-cover.jpg" alt="Period Pocket Guide Cover" class="book-cover" />
+                <a href="/Donation/DownloadBook2" class="download-btn">Download eBook</a>
+            </div>
+        }
+        else if (bookChoice == "both")
+        {
+            <div class="book-card">
+                <img src="/images/Becoming-You-Cover.jpg" alt="Becoming You Cover" class="book-cover" />
+                <a href="/Donation/DownloadBook1" class="download-btn">Download eBook</a>
+            </div>
+
+            <div class="book-card">
+                <img src="/images/A-Period-Pocket-guide-cover.jpg" alt="Period Pocket Guide Cover" class="book-cover" />
+                <a href="/Donation/DownloadBook2" class="download-btn">Download eBook</a>
+            </div>
+        }
+        else
+        {
+            <p style="color:red;">We couldn't determine your book selection. Please contact support.</p>
+        }
+    </div>
+</div>

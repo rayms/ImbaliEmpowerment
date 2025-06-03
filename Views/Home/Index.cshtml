@@ -1,0 +1,1410 @@
+﻿@model List<Imbali.Models.InfoBox>
+
+
+@using System.IO
+@using System.Linq
+@using System.Dynamic
+
+
+
+
+
+@{
+    ViewData["Title"] = "Welcome to Imbali";
+    var bannerUrl = "/images/default-banner.jpg";
+    var isAdmin = User.IsInRole("Admin"); 
+}
+
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@600;700&family=Mulish:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&display=swap" rel="stylesheet">
+
+
+
+<!-- ===============================
+     Imbali Home Page - Pastel Themed
+     Banner Editable by Admin Only
+================================= -->
+<!--Welcome Banner with Transparent Background Image -->
+<div class="welcome-banner">
+    <div class="banner-background"></div>
+
+    <div class="text-center welcome-content">
+        <!-- Welcome Text + Logo Side by Side -->
+        <div class="welcome-section">
+            <!-- Text Side -->
+            <div class="chalk-welcome">
+                <h1 class="main-heading">
+                    <span class="imbali-highlight"> Welcome to Imbali Empowerment</span>
+                </h1>
+
+                <p class="welcome-message">
+                    FEMALE EMPOWERMENT THROUGH <br />
+                    <span class="centered-word">KNOWLEDGE</span>
+                </p>
+
+                <p class="welcome-subtext">
+                    A South African Doula and a Gynaecologist/Obstetrician have joined hands to empower women through knowledge about their body, health and sexuality
+                </p>
+            </div>
+
+            <!-- Logo Side -->
+            <div class="logo-circle-container">
+                <img src="/images/ImbaliLogo.JPG" alt="Imbali Logo" class="imbali-logo" />
+                @if (isAdmin)
+                {
+                    <div class="mt-2 text-center">
+                        <a href="@Url.Action("EditLogo", "Home")" class="btn btn-outline-primary">Edit Logo</a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@{
+    var flipBox1Images = ViewBag.FlipBox1Images as List<string>;
+    var flipBox2Images = ViewBag.FlipBox2Images as List<string>;
+    var flipBox3Images = ViewBag.FlipBox3Images as List<string>;
+}
+
+
+<div class="flip-box-container">
+    <!-- Card 1 -->
+    <div class="flip-box">
+        <div class="flip-box-inner">
+            <div class="flip-box-front vibrant-cover pink-cover">
+                <h2 class="cover-title">She <span class="knows-text">Knows!</span></h2>
+            </div>
+            <div class="flip-box-back">
+                <div class="back-pages">
+                    @for (var i = 0; i < flipBox1Images.Count; i++)
+                    {
+                        var isActive = i == 0 ? "active-page" : "";
+                        <div class="back-page @isActive">
+                            <img src="@flipBox1Images[i]" alt="FlipBox1 Image @(i + 1)" class="enlargeable-img" />
+                        </div>
+                    }
+                </div>
+                <div class="back-controls">
+                    <button class="prev-btn">Prev</button>
+                    <button class="magnify-btn"><i class="fa fa-search-plus"></i></button>
+                    <button class="next-btn">Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="flip-box">
+        <div class="flip-box-inner">
+            <div class="flip-box-front vibrant-cover yellow-cover">
+                <h2 class="cover-title">Coochie <span class="knows-text">Culture</span></h2>
+            </div>
+            <div class="flip-box-back">
+                <div class="back-pages">
+                    @for (var i = 0; i < flipBox2Images.Count; i++)
+                    {
+                        var isActive = i == 0 ? "active-page" : "";
+                        <div class="back-page @isActive">
+                            <img src="@flipBox2Images[i]" alt="FlipBox2 Image @(i + 1)" class="enlargeable-img" />
+                        </div>
+                    }
+                </div>
+                <div class="back-controls">
+                    <button class="prev-btn">Prev</button>
+                    <button class="magnify-btn"><i class="fa fa-search-plus"></i></button>
+                    <button class="next-btn">Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="flip-box">
+        <div class="flip-box-inner">
+            <div class="flip-box-front vibrant-cover red-cover">
+                <h2 class="cover-title">Female <span class="knows-text">Focus</span></h2>
+            </div>
+            <div class="flip-box-back">
+                <div class="back-pages">
+                    @for (var i = 0; i < flipBox3Images.Count; i++)
+                    {
+                        var isActive = i == 0 ? "active-page" : "";
+                        <div class="back-page @isActive">
+                            <img src="@flipBox3Images[i]" alt="FlipBox3 Image @(i + 1)" class="enlargeable-img" />
+                        </div>
+                    }
+                </div>
+                <div class="back-controls">
+                    <button class="prev-btn">Prev</button>
+                    <button class="magnify-btn"><i class="fa fa-search-plus"></i></button>
+                    <button class="next-btn">Next</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@{
+    var placeholderPath = "/images/placeholder.png";
+}
+
+<div class="info-boxes">
+    @if (Model != null && Model.Count > 0)
+    {
+        for (int i = 0; i < Model.Count; i++)
+        {
+            var pastelClass = $"pastel{(i % 7) + 1}";
+            var slideClass = (i % 2 == 0) ? "slide-left" : "slide-right";
+
+            <div class="info-box @pastelClass @slideClass collapsed">
+
+            
+                @if (!string.IsNullOrWhiteSpace(Model[i].Image)
+               && !Model[i].Image.Equals(placeholderPath, StringComparison.OrdinalIgnoreCase))
+                {
+                    <div class="info-banner">
+                        <img src="@Model[i].Image"
+                             alt="Info Box Image @(i + 1)"
+                             class="banner-img"
+                             onerror="this.style.display='none'" />
+                    </div>
+                }
+
+                <div class="info-header">
+                    <h3>@Model[i].Title</h3>
+                    <button class="toggle-btn" onclick="toggleBox(this)">+</button>
+                </div>
+
+                <div class="info-content-flex">
+
+                 
+                    @if (!string.IsNullOrWhiteSpace(Model[i].InlineImage)
+                   && !Model[i].InlineImage.Equals(placeholderPath, StringComparison.OrdinalIgnoreCase))
+                    {
+                        <div class="inline-image-container">
+                            <img src="@Model[i].InlineImage"
+                                 alt="Inline Image"
+                                 class="inline-img"
+                                 onerror="this.style.display='none'" />
+                        </div>
+                    }
+
+                    <div class="text-content">
+                        <p>
+                            @(TruncateWords(Model[i].Content, 100)
+                                .Replace("&nbsp;", " ")
+                                .Trim())
+                        </p>
+
+                        <a href="@Url.Action("Page","Content", new { id = i })"
+                           class="learn-more-btn">
+                            Learn More
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <p class="alert alert-warning text-center">
+            We are updating our content. Please check back soon!
+        </p>
+    }
+</div>
+
+<!-- Modal for Enlarged Images -->
+<div id="imageModal" class="image-modal">
+    <span class="close-modal">&times;</span>
+    <img class="modal-content" id="modalImage">
+</div>
+
+
+<!-- ===============================
+     Custom Styles for Pastel Theme
+================================= -->
+<style>
+        /* ===============================
+           General Layout & Typography
+        ================================= */
+        body {
+            background-color: #A78EB3; 
+            font-family: 'Mulish', sans-serif;
+            color: #5C5470;
+            overflow-x: hidden;
+        }
+
+        /* ===============================
+           Welcome Section
+        ================================= */
+
+
+    /* Welcome Section with Faint Background Banner */
+    .welcome-banner {
+        position: relative;
+        width: 100vw; 
+        margin-left: calc(-50vw + 50%); 
+        min-height: 60vh;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+
+        .welcome-banner::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: url('/images/ImbaliCover.jpg') no-repeat center center;
+            background-size: cover;
+            opacity: 0.2; 
+            z-index: 0;
+        }
+
+    .welcome-section {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+        text-align: center;
+        position: relative;
+        z-index: 1;
+        padding: 4rem 1rem;
+    }
+
+    .chalk-welcome {
+        max-width: 500px;
+        text-align: left;
+    }
+
+    .logo-circle-container {
+        flex: 0 0 auto;
+    }
+
+    .centered-word {
+        display: block;
+        text-align: center;
+    }
+
+    .main-heading {
+        font-family: 'Lora', serif;
+        font-weight: 700;
+        font-size: 3.5rem;
+        color: #000;
+        text-shadow: 2px 2px 5px rgba(228, 187, 232, 0.4), 1px 1px 3px rgba(167, 215, 197, 0.3);
+        opacity: 0;
+        animation: fadeInUp 1s ease-out forwards;
+        animation-delay: 0.3s;
+        margin-bottom: 1rem;
+    }
+
+    .imbali-highlight {
+        position: relative;
+        display: inline-block;
+        padding-bottom: 12px;
+        font-weight: 700;
+    }
+
+        .imbali-highlight::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            height: 12px;
+            width: 100%;
+            background: url('/images/ChalkOutline.png') repeat-x;
+            background-size: contain;
+            opacity: 0;
+            animation: drawUnderline 2s ease-out forwards;
+            animation-delay: 1.5s;
+            filter: invert(1) brightness(2);
+        }
+
+    .welcome-message {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #000;
+        opacity: 0;
+        animation: fadeInUp 1s ease-out forwards;
+        animation-delay: 1s;
+    }
+
+    .welcome-subtext {
+        font-size: 1.1rem;
+        margin-top: 1rem;
+        color: white;
+        line-height: 1.5;
+        text-align: center;
+    }
+
+    .section-divider-banner {
+        position: relative;
+        width: 100vw;
+        height: 250px;
+        margin: 0;
+        background: url('/images/ImbaliCover.jpg') no-repeat center center;
+        background-size: cover;
+        background-position: center;
+        border-top: 4px solid #dab6e1;
+        border-bottom: 4px solid #dab6e1;
+    }
+
+        .section-divider-banner img {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+
+        /* ===============================
+           Logo Styling
+        ================================= */
+        .logo-circle-container {
+            width: 200px;
+            height: 200px;
+            border: 4px solid #E4BBE8;
+            border-radius: 50%;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+            .logo-circle-container:hover {
+                transform: scale(1.05);
+            }
+
+        .imbali-logo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .logo-circle-container:hover .imbali-logo,
+    .logo-circle-container:active .imbali-logo {
+        box-shadow: 0 0 25px 8px rgba(128, 0, 255, 0.6), 0 0 40px 16px rgba(186, 85, 211, 0.5), 0 0 60px 24px rgba(221, 160, 221, 0.4);
+        transform: scale(1.08);
+    }
+
+        /* ===============================
+           Flip Boxes
+        ================================= */
+        .flip-box-container {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin: 3rem 0;
+            transition: all 0.3s ease;
+        }
+
+    .flip-box {
+        background-color: transparent;
+        width: 200px;
+        height: 250px;
+        perspective: 1000px;
+        position: relative;
+        transition: transform 0.4s ease, width 0.4s ease, height 0.4s ease;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .flip-box-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        transform-style: preserve-3d;
+        transition: transform 0.8s;
+        border-radius: 12px;
+    }
+
+    .flip-box-front {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+        border-radius: 12px;
+        overflow: hidden;
+        z-index: 2;
+    }
+
+        .flip-box-front::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 20px; 
+            height: 100%;
+            background: linear-gradient(to left, rgba(0,0,0,0.1), transparent);
+            transform: skewX(-10deg);
+            pointer-events: none;
+            border-top-right-radius: 12px;
+            border-bottom-right-radius: 12px;
+        }
+
+            .flip-box:hover {
+                transform: scale(1.05);
+                z-index: 3;
+            }
+
+            .flip-box.clicked:hover {
+                transform: none;
+                z-index: 1;
+            }
+
+            .flip-box.focused:hover {
+                transform: scale(1.2);
+                z-index: 2;
+            }
+
+            .flip-box.focused {
+                width: 260px;
+                height: 340px;
+                transform: scale(1.2);
+                z-index: 2;
+                box-shadow: none;
+                transition: transform 0.4s ease, box-shadow 0.4s ease 0.4s;
+            }
+
+                .flip-box.focused.glow {
+                    box-shadow: 0 0 20px rgba(255, 182, 193, 0.8), 0 0 30px rgba(255, 192, 203, 0.5);
+                }
+
+        .flip-box-container.focused-mode .flip-box:not(.focused) {
+            transform: scale(0.7);
+            opacity: 0.5;
+            z-index: 1;
+        }
+
+        .flip-box.focused,
+        .flip-box-container.focused-mode .flip-box:not(.focused) {
+            animation: none;
+        }
+
+        .flip-box-container:not(.focused-mode) .flip-box {
+            animation: pulse 6s infinite ease-in-out;
+        }
+
+        .flip-box-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transform-style: preserve-3d;
+            transition: transform 0.8s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: 3px solid #FFD6D6;
+            border-radius: 12px;
+        }
+
+        .flip-box.clicked .flip-box-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-box-container.focused-mode .flip-box:not(.focused):hover {
+            animation: shake 0.5s;
+            transform: scale(0.75);
+        }
+
+
+        .flip-box.focused:hover {
+            animation: none;
+        }
+
+        .flip-box-front, .flip-box-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 12px;
+        }
+
+    
+
+        /* ===============================
+           Flip Front Cover Styles
+        ================================= */
+        .vibrant-cover {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 12px;
+            padding: 1rem;
+            height: 100%;
+            width: 100%;
+            text-align: center;
+        }
+
+        .pink-cover {
+            background: #E8AEB7;
+            color: #FAEDCB;
+        }
+
+        .yellow-cover {
+            background: #FFF9DB;
+            color: #5C5470;
+        }
+
+        .red-cover {
+            background: #F4A6A6;
+            color: #fff;
+        }
+
+        .cover-title {
+            font-family: 'Baloo 2', cursive;
+            font-size: 2.2rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            letter-spacing: 1px;
+        }
+
+        .knows-text {
+            font-family: 'Baloo 2', cursive;
+            font-weight: 900;
+        }
+
+    /* ===============================
+       Flip Front / Back
+    ================================= */
+    .flip-box-front img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 12px;
+    }
+
+    .flip-box-back {
+        background-color: #E4BBE8;
+        color: #5C5470;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        transform: rotateY(180deg);
+        padding: 0.5rem;
+        font-family: 'Mulish', sans-serif;
+        font-weight: 600;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .back-pages {
+        width: 100%;
+        height: 85%;
+        position: relative;
+        margin-bottom: 0.5rem;
+    }
+
+    .back-page {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: none;
+    }
+
+        .back-page.active-page {
+            display: block;
+        }
+
+        .back-page img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 8px;
+            padding: 0.3rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+    .back-controls {
+        width: 100%;
+        display: flex;
+        justify-content: space-around; 
+        align-items: center;
+        padding: 0 0.5rem;
+        margin-top: auto;
+        margin-bottom: 0.2rem;
+    }
+
+        .back-controls button {
+            background-color: rgba(255, 255, 255, 0.6);
+            border: 1px solid #FFD6D6;
+            padding: 0.2rem 0.5rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 4px;
+            color: #5C5470;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+            .back-controls button:hover {
+                background-color: #FFD6D6;
+                transform: scale(1.05);
+            }
+
+    /* ===============================
+       Magnify Button Styling
+    ================================= */
+    .magnify-btn {
+        background-color: rgba(255, 255, 255, 0.6);
+        border: 1px solid #FFD6D6;
+        padding: 0.2rem 0.5rem;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        border-radius: 4px;
+        color: #5C5470;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .magnify-btn:hover {
+            background-color: #FFD6D6;
+            transform: scale(1.1);
+        }
+
+        .magnify-btn i {
+            font-size: 1.2rem;
+        }
+
+    /* ===============================
+       Flip Front / Back + Modal Styles
+    ================================= */
+    .flip-box-front img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 12px;
+    }
+
+    .flip-box-back {
+        background-color: #E4BBE8;
+        color: #5C5470;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        transform: rotateY(180deg);
+        padding: 0.5rem;
+        font-family: 'Mulish', sans-serif;
+        font-weight: 600;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .back-pages {
+        width: 100%;
+        height: 90%;
+        position: relative;
+        margin-bottom: 0.5rem;
+    }
+
+    .back-page {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: none;
+    }
+
+        .back-page.active-page {
+            display: block;
+        }
+
+        .back-page img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 8px;
+            padding: 0.3rem;
+        }
+
+    .back-controls {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        padding: 0 0.5rem;
+        margin-top: auto;
+        margin-bottom: 0.2rem;
+        align-items: center;
+    }
+
+        .back-controls button,
+        .magnify-btn {
+            background-color: rgba(255, 255, 255, 0.6);
+            border: 1px solid #FFD6D6;
+            padding: 0.2rem 0.5rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 4px;
+            color: #5C5470;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+            .back-controls button:hover,
+            .magnify-btn:hover {
+                background-color: #FFD6D6;
+                transform: scale(1.05);
+            }
+
+            .magnify-btn i {
+                font-size: 1.2rem;
+            }
+
+    /* ===============================
+       Modal Styles (Updated)
+    ================================= */
+    .image-modal {
+        display: none;
+        position: fixed;
+        z-index: 9999;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.9);
+        overflow: auto;
+        text-align: center;
+        padding: 2rem 0;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal-content {
+        max-width: 90%;
+        max-height: 90vh;
+        object-fit: contain;
+        margin: auto;
+        border-radius: 12px;
+        box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+        transition: transform 0.3s ease;
+    }
+
+        .modal-content:hover {
+            transform: scale(1.02);
+        }
+
+    .close-modal {
+        position: absolute;
+        top: 20px;
+        right: 35px;
+        color: #fff;
+        font-size: 40px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+        .close-modal:hover {
+            color: #ccc;
+        }
+
+    /* ===============================
+       Mobile Modal Centering
+    ================================= */
+    @@media (max-width: 768px) {
+        .image-modal
+
+    {
+        padding: 4rem 1rem; 
+        align-items: flex-start;
+    }
+
+    .modal-content {
+        max-width: 95%;
+        max-height: 70vh;
+        margin-top: 3rem;
+    }
+
+    .close-modal {
+        top: 15px;
+        right: 20px;
+        font-size: 30px;
+    }
+
+    }
+
+        /* ===============================
+           Info Boxes Slide Style
+        ================================= */
+        .info-boxes {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        .info-box {
+            display: flex;
+            align-items: stretch;
+            height: 300px;
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.5s ease;
+        }
+
+        .info-banner {
+            flex: 0 0 100%;
+            transition: transform 0.6s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+            .info-banner img {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+                padding: 0.5rem;
+            }
+
+        .info-content {
+            flex: 1;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.85);
+            color: #333;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .info-box.open .info-banner {
+            flex: 0 0 0%; 
+        }
+
+        .info-box.open .info-content {
+            flex: 1 1 100%;
+            opacity: 1;
+            width: 100%;
+            padding: 2rem;
+        }
+
+        .info-box.open.slide-left .info-banner,
+        .info-box.open.slide-right .info-banner {
+            transform: none;
+        }
+
+    .info-text, .box-content, .truncated-preview {
+        word-break: break-word;
+        overflow-wrap: break-word;
+    }
+
+    .text-content {
+        max-height: 300px;
+        overflow-y: auto;
+        padding-bottom: 2rem;
+        word-break: break-word;
+        overflow-wrap: break-word;
+    }
+
+
+    .info-banner {
+        width: 100%;
+        max-height: 350px; 
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+        .info-banner img {
+            max-width: 95%; 
+            max-height: 95%; 
+            object-fit: contain;
+            display: block;
+        }
+
+    .inline-image-container {
+        flex: 0 0 auto;
+        max-width: 200px; 
+        max-height: 200px;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0.5rem; 
+    }
+
+        .inline-image-container img {
+            max-width: 90%; 
+            max-height: 90%;
+            object-fit: contain;
+            display: block;
+        }
+
+
+
+        /* ===============================
+           Pastel Backgrounds for Info Boxes
+        ================================= */
+        .pastel1 {
+            background: #F6F5E8;
+        }
+
+        .pastel2 {
+            background: #DFEEDB;
+        }
+
+        .pastel3 {
+            background: #E2F4F1;
+        }
+
+        .pastel4 {
+            background: #A0B5E8;
+        }
+
+        .pastel5 {
+            background: #FCE9F0;
+        }
+
+        .pastel6 {
+            background: #F5E3DF;
+        }
+
+        .pastel7 {
+            background: #E8C5FA;
+        }
+
+        /* ===============================
+           Animations
+        ================================= */
+
+        @@keyframes pulse {
+            0%, 100%
+
+        {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.05);
+        }
+
+        }
+
+
+        .info-box.nudge.slide-left .info-banner {
+            animation: nudge-left 1s ease-in-out;
+        }
+
+        .info-box.nudge.slide-right .info-banner {
+            animation: nudge-right 1s ease-in-out;
+        }
+
+        @@keyframes fadeInUp {
+            from
+
+        {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        @@keyframes drawUnderline {
+            from
+
+        {
+            width: 0;
+            opacity: 0;
+        }
+
+        to {
+            width: 100%;
+            opacity: 1;
+        }
+
+        }
+
+        @@keyframes shake {
+            0%, 100%
+
+        {
+            transform: translateX(0);
+        }
+
+        25% {
+            transform: translateX(-5px);
+        }
+
+        50% {
+            transform: translateX(5px);
+        }
+
+        75% {
+            transform: translateX(-5px);
+        }
+
+        }
+
+        @@keyframes nudge-left {
+            0%, 100%
+
+        {
+            transform: translateX(0);
+        }
+
+        50% {
+            transform: translateX(-10px);
+        }
+
+        }
+
+        @@keyframes nudge-right {
+            0%, 100%
+
+        {
+            transform: translateX(0);
+        }
+
+        50% {
+            transform: translateX(10px);
+        }
+
+        }
+
+    /* ===============================
+        Responsive Adjustments
+    ================================= */
+    @@media (max-width: 768px) {
+        .welcome-section
+
+    {
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .chalk-welcome {
+        text-align: center;
+    }
+
+    .info-content {
+        font-size: 0.95rem;
+    }
+
+    .info-box {
+        flex-direction: column;
+        padding: 1rem;
+        height: auto;
+        overflow: hidden;
+        transition: all 0.4s ease;
+        cursor: pointer;
+        position: relative;
+    }
+
+        .info-box.collapsed .info-content-flex {
+            display: none; 
+        }
+
+        .info-box.expanded .info-content-flex {
+            display: flex; 
+            flex-direction: column;
+        }
+
+    .inline-image-container img {
+        width: 100%;
+        height: auto;
+    }
+
+    .text-content {
+        max-height: 300px;
+        overflow-y: auto;
+        padding-bottom: 2rem;
+    }
+
+    .toggle-btn {
+        display: inline-block;
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 1.2rem;
+        background: #FF8C42;
+        color: white;
+        border: none;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: background 0.3s ease;
+        z-index: 5;
+    }
+
+        .toggle-btn:hover {
+            background: #FF7043;
+        }
+
+    }
+
+    .box-content-wrapper {
+        position: relative;
+    }
+
+    .truncated-preview {
+        max-height: 140px;
+        overflow: hidden;
+        position: relative;
+        word-break: break-word;
+        overflow-wrap: break-word;
+        transition: max-height 0.4s ease;
+    }
+
+    .box-content.expanded {
+        max-height: none;
+    }
+
+    .learn-more-btn {
+        background-color: #f582ae;
+        border: none;
+        color: white;
+        padding: 0.4rem 1rem;
+        margin-top: 0.5rem;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 0.9rem;
+    }
+
+        .learn-more-btn:hover {
+            background-color: #db5e8a;
+        }
+
+
+    /* ===============================
+        Inline Images Styling (Global)
+    ================================= */
+    .inline-img-fixed {
+        width: 300px;
+        height: auto;
+        object-fit: contain;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        display: block;
+    }
+
+    .inline-image-container img {
+        width: 250px;
+        height: auto;
+        border-radius: 10px;
+        object-fit: cover;
+        display: block;
+    }
+
+    .info-content-flex {
+        display: flex;
+        align-items: flex-start;
+        gap: 1.5rem;
+        padding: 1rem;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    /* ===============================
+        Header and Buttons
+    ================================= */
+    .info-box .info-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(255, 255, 240, 0.7);
+        padding: 1rem;
+        border-bottom: 1px solid #ddd;
+        font-family: 'Lora', serif;
+        font-size: 1.3rem;
+        font-weight: bold;
+        color: #5C5470;
+    }
+
+    .learn-more-btn {
+        display: inline-block;
+        margin-top: 1rem;
+        background: #FF8C42;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 0.9rem;
+        transition: background 0.3s ease;
+    }
+
+        .learn-more-btn:hover {
+            background: #FF7043;
+        }
+
+
+
+</style>
+
+    <script>
+        // Flip Box Logic
+        const flipBoxes = document.querySelectorAll('.flip-box');
+        const container = document.querySelector('.flip-box-container');
+
+        flipBoxes.forEach(box => {
+            const pages = box.querySelectorAll('.back-page');
+            const nextBtn = box.querySelector('.next-btn');
+            const prevBtn = box.querySelector('.prev-btn');
+            let currentPage = 0;
+
+            // Flip and focus logic
+            box.addEventListener('click', () => {
+                if (box.classList.contains('focused')) {
+                    // Unfocus and remove glow
+                    box.classList.remove('focused', 'glow', 'clicked');
+                    container.classList.remove('focused-mode');
+                } else {
+                    // Reset others
+                    flipBoxes.forEach(b => b.classList.remove('focused', 'glow', 'clicked'));
+                    // Focus current
+                    box.classList.add('focused', 'clicked');
+                    container.classList.add('focused-mode');
+                    // Add glow after delay
+                    setTimeout(() => {
+                        box.classList.add('glow');
+                    }, 400);
+                }
+            });
+
+            // Page switching logic if pages exist
+            if (pages.length && nextBtn && prevBtn) {
+                nextBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    pages[currentPage].classList.remove('active-page');
+                    currentPage = (currentPage + 1) % pages.length;
+                    pages[currentPage].classList.add('active-page');
+                });
+
+                prevBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    pages[currentPage].classList.remove('active-page');
+                    currentPage = (currentPage - 1 + pages.length) % pages.length;
+                    pages[currentPage].classList.add('active-page');
+                });
+            }
+        });
+
+        // Info Box Logic
+        const infoBoxes = document.querySelectorAll('.info-box');
+
+        // Toggle Open on Click
+        infoBoxes.forEach(box => {
+            box.addEventListener('click', () => {
+                box.classList.toggle('open');
+            });
+        });
+
+              // Nudging Effect Every 6s 
+        setInterval(() => {
+            infoBoxes.forEach(box => {
+                if (!box.classList.contains('open')) {
+                    box.classList.add('nudge');
+                    setTimeout(() => {
+                        box.classList.remove('nudge');
+                    }, 1000);
+                }
+            });
+        }, 3000);
+
+            // Modal Elements
+    const modal = document.getElementById("imageModal");
+    const modalImg = document.getElementById("modalImage");
+    const closeModal = document.querySelector(".close-modal");
+
+    // Open Modal on Magnify Click
+    document.querySelectorAll(".magnify-btn").forEach(button => {
+        button.addEventListener("click", function (e) {
+            e.stopPropagation(); // prevent flip or other triggers
+            const currentImg = this.closest(".flip-box-back").querySelector(".back-page.active-page img");
+            if (currentImg) {
+                modalImg.src = currentImg.src;
+                modal.style.display = "flex";
+            }
+        });
+    });
+
+    // Close Modal
+    closeModal.onclick = function () {
+        modal.style.display = "none";
+        modalImg.src = "";
+    }
+
+    // Close Modal if clicking outside the image
+    window.onclick = function (event) {
+        if (event.target === modal) {
+            modal.style.display = "none";
+            modalImg.src = "";
+        }
+    }
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const infoBoxes = document.querySelectorAll('.info-box');
+
+        infoBoxes.forEach(box => {
+            box.addEventListener('click', function () {
+                if (window.innerWidth <= 768) { // Only on mobile
+                    this.classList.toggle('expanded');
+                }
+            });
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.box-content-wrapper').forEach(wrapper => {
+            const content = wrapper.querySelector('.box-content');
+            const button = wrapper.querySelector('.learn-more-btn');
+
+            button.addEventListener('click', () => {
+                content.classList.toggle('expanded');
+                button.textContent = content.classList.contains('expanded') ? 'Show Less' : 'Learn More';
+            });
+        });
+    });
+
+    @functions {
+        public string TruncateWords(string html, int wordLimit)
+        {
+            if (string.IsNullOrWhiteSpace(html)) return "";
+
+            var text = System.Text.RegularExpressions.Regex.Replace(html, "<.*?>", " "); // Remove HTML tags
+            var words = text.Split(new[] { ' ', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+            if (words.Length <= wordLimit) return text;
+
+            return string.Join(" ", words.Take(wordLimit)) + "...";
+        }
+    }
+
+</script>
+
+   
+
+
+
