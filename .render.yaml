@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: imbali-empowerment
+    env: docker
+    repo: https://github.com/rayms/ImbaliEmpowerment
+    dockerfilePath: ./Dockerfile
+    plan: free
